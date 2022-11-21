@@ -9,11 +9,11 @@ class SpicesController < ApplicationController
 
     #GET /spices/:id
     def show
-        spice = Spice.find_by(id: params[:id])
+        spice = find_spice
         if spice
             render json: spice
         else
-            render json: {error: "Couldn't find spice"}, status: :not_found
+            not_found_response
         end
     end
 
@@ -25,31 +25,39 @@ class SpicesController < ApplicationController
 
     #PATCH /spices
     def update
-        spice = Spice.find_by(id: params[:id])
+        spice = find_spice
         if spice
             spice.update(spice_params)
             render json: spice
         else
-            render json: {error: "Couldn't find spice"}, status: :not_found
+            not_found_response
         end
     end
 
     #DELETE /spices
     def destroy
-        spice = Spice.find_by(id: params[:id])
+        spice = find_spice
         if spice
             spice.destroy
             head :no_content
         else
-            render json: {error: "Couldn't find spice"}, status: :not_found
+            not_found_response
         end
     end
 
 
     private
 
+    def find_spice
+        Spice.find_by(id: params[:id])
+    end
+
     def spice_params
         params.permit(:title, :image, :description, :notes, :rating)
+    end
+
+    def not_found_response
+        render json: {error: "Couldn't find spice"}, status: :not_found
     end
 
 end
